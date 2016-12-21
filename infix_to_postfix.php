@@ -4,6 +4,7 @@
  *
  * @author          Simon Mitchell <simon.mitchell@evgo.com>
  * @version         1.0.0               2016-12-20 14:39:13 SM:  Prototype
+ * @version         1.1.0               2016-12-21 17:29:51 SM:  Fixed problem with unbounded loops.
  */
 
 $txtExpr="17.3*(1+2)-(173.23+5*(23+11.2312))+26";
@@ -26,12 +27,16 @@ while (true)
         echo "<p>Float: {$arrMatches[0]}";
         $txtExpr=substr($txtExpr,strlen($arrMatches[0])-strlen($txtExpr));
         $arrOutputStack[]=$arrMatches[0];
+        if (strlen($txtExpr)==strlen($arrMatches[0]))
+            break;        
     }    
     elseif (@preg_match('/^[0-9]+/',$txtExpr,$arrMatches))
     {
         echo "<p>Integer: {$arrMatches[0]}";
         $txtExpr=substr($txtExpr,strlen($arrMatches[0])-strlen($txtExpr));
         $arrOutputStack[]=$arrMatches[0];
+        if (strlen($txtExpr)==strlen($arrMatches[0]))
+            break;        
     }
     elseif (@preg_match('/^[+-\/*]/',$txtExpr,$arrMatches))
     {
@@ -59,13 +64,16 @@ while (true)
                 $arrOperatorStack[]=$arrMatches[0];
             }
         }
-        
+        if (strlen($txtExpr)==strlen($arrMatches[0]))
+            break;
     }
     elseif (@preg_match('/^(\(){1}/',$txtExpr,$arrMatches))
     {
         echo "<p>Opening Bracket: {$arrMatches[0]}";
         $txtExpr=substr($txtExpr,1,strlen($txtExpr)-1);
         $arrOperatorStack[]=$arrMatches[0];
+        if (strlen($txtExpr)==strlen($arrMatches[0]))
+            break;        
     }
     elseif (@preg_match('/^(\)){1}/',$txtExpr,$arrMatches))
     {
@@ -80,6 +88,8 @@ while (true)
             else
                 $arrOutputStack[]=$txtOp;
         }
+        if (strlen($txtExpr)==strlen($arrMatches[0]))
+            break;        
     }
     else
         break;
