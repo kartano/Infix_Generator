@@ -23,6 +23,18 @@ enum Association
  */
 final class PostfixUtils
 {
+    /**
+     * @var array[] Array of operators with attributes.
+     * Each array item MUST have three attributes:
+     * <code>
+     *      [
+     *          (integer operator precedence - bigger number, higher precedence),
+     *          Association,
+     *          (bool flag indicating if operator is unary)
+     *      ]
+     *      ...
+     * </code>
+     */
     private static array $operators = [
         '^' => [9, Association::RIGHT, false],
         '*' => [8, Association::LEFT, false],
@@ -81,16 +93,20 @@ final class PostfixUtils
 
     private static function endsWith(string $haystack, string $needle): bool
     {
-        // return substr($haystack, -strlen($needle)) === $needle;
         return str_ends_with($haystack, $needle);
     }
 
-    private static function arrayPeek(array $stack)
+    private static function arrayPeek(array $stack): string
     {
         return $stack[count($stack) - 1];
     }
 
-    public static function postfix($expression): string
+    /**
+     * Convert a given expression into Postfix
+     * @param string $expression An expression to parse into postfix format
+     * @return string
+     */
+    public static function postfix(string $expression): string
     {
         // SM:  Remove any white space from the expression.
         $expression = preg_replace('/\s+/', '', $expression);
@@ -158,7 +174,11 @@ final class PostfixUtils
         return $output;
     }
 
-    public static function postfixEval($postfix): string
+    /**
+     * @param string $postfix Postfix expression to evaluate.
+     * @return string
+     */
+    public static function postfixEval(string $postfix): string
     {
         $stack = [];
         $num = '';
